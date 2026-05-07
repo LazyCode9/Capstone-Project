@@ -68,7 +68,7 @@ class NotesPage(BasePage):
                 if attempt == max_retries - 1:
                     raise
                 # Short pause to let DOM settle
-                self.driver.implicitly_wait(0.5)
+                
         return False
 
     def get_title_error(self):
@@ -94,8 +94,17 @@ class NotesPage(BasePage):
         self.click((By.XPATH, xpath))
 
     def confirm_delete(self):
-        """Click the red Delete/Confirm button in the modal."""
-        self.click(self.MODAL_CONFIRM_BTN)
+
+        button = self.wait.until(
+            EC.element_to_be_clickable(self.MODAL_CONFIRM_BTN)
+        )
+
+        self.driver.execute_script(
+            "arguments[0].scrollIntoView(true);",
+            button
+        )
+
+        button.click()
 
     def is_modal_displayed(self):
         """Check if the confirmation modal is visible."""
@@ -108,8 +117,11 @@ class NotesPage(BasePage):
             return False
 
     def wait_modal_closed(self):
-        """Wait until the modal disappears from the DOM."""
-        self.wait.until_not(EC.presence_of_element_located(self.MODAL))
+        """Wait until modal becomes invisible."""
+        
+        WebDriverWait(self.driver, 10).until(
+            EC.invisibility_of_element_located(self.MODAL)
+        )
 
     def get_note_checkbox(self, title):
         # Use a relative XPath inside a fresh card find (already fine because it finds elements each time)
@@ -135,16 +147,32 @@ class NotesPage(BasePage):
     MODAL_CANCEL_BTN = (By.CSS_SELECTOR, "[data-testid='note-delete-cancel-2']")
 
     def cancel_delete(self):
-        """Click the Cancel button inside the modal to abort deletion."""
-        self.wait.until(EC.element_to_be_clickable(self.MODAL_CANCEL_BTN))
-        self.click(self.MODAL_CANCEL_BTN)
 
-    def is_note_present(self, title):
-        """Check if a note card with the exact title exists in the DOM."""
-        xpath = f"//div[@data-testid='note-card']//div[@data-testid='note-card-title' and normalize-space()='{title}']"
+        button = self.wait.until(
+            EC.element_to_be_clickable(self.MODAL_CANCEL_BTN)
+        )
+
+        self.driver.execute_script(
+            "arguments[0].scrollIntoView(true);",
+            button
+        )
+
+        button.click()
+
+    def is_note_present(self, title, timeout=10):
+        """Wait until note appears and is visible."""
+        
+        xpath = (
+            f"//div[@data-testid='note-card']//div[@data-testid='note-card-title' "
+            f"and normalize-space()='{title}']"
+        )
+
         try:
-            self.driver.find_element(By.XPATH, xpath)
+            WebDriverWait(self.driver, timeout).until(
+                EC.visibility_of_element_located((By.XPATH, xpath))
+            )
             return True
+
         except:
             return False
         

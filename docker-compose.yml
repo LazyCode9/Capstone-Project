@@ -7,6 +7,12 @@ services:
     ports:
       - "4444:4444"
 
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:4444/wd/hub/status"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
   chrome:
     image: selenium/node-chrome:4.21.0
 
@@ -19,9 +25,7 @@ services:
       - SE_EVENT_BUS_HOST=selenium-hub
       - SE_EVENT_BUS_PUBLISH_PORT=4442
       - SE_EVENT_BUS_SUBSCRIBE_PORT=4443
-
-    deploy:
-      replicas: 2
+      - SE_NODE_MAX_SESSIONS=1
 
   automation-tests:
 
@@ -40,4 +44,7 @@ services:
       - ./allure-results:/app/allure-results
 
     command: >
-      pytest -n 2
+      sh -c "
+      sleep 20 &&
+      pytest -n 1
+      "
