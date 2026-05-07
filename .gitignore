@@ -1,0 +1,40 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.egg-info/
+dist/
+build/
+
+# Virtual environment
+venv/
+env/
+.venv/
+
+# Pytest
+.pytest_cache/
+*.pytest_cache
+
+# Allure reports
+reports/allure-results/
+reports/allure-report/
+reports/*.html
+
+# Logs
+logs/
+*.log
+
+# IDE / editors
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Environment / secrets
+.env
+config/environment.py     # If it contains credentials; otherwise keep
+*.local.*
