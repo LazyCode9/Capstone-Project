@@ -16,6 +16,8 @@ env/
 *.pytest_cache
 
 # Allure reports
+allure-results/
+allure-report/
 reports/allure-results/
 reports/allure-report/
 reports/*.html

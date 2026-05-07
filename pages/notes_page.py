@@ -56,7 +56,20 @@ class NotesPage(BasePage):
     # ---------- Validations ----------
 
     def is_note_created(self, title):
-        return self.is_visible(self.note_title(title))
+        """Return True if a note with the given title is visible, handling DOM refreshes."""
+        locator = self.note_title(title)
+        max_retries = 3
+        for attempt in range(max_retries):
+            try:
+                # Re-locate the element fresh each time
+                element = self.wait.until(EC.visibility_of_element_located(locator))
+                return element.is_displayed()
+            except StaleElementReferenceException:
+                if attempt == max_retries - 1:
+                    raise
+                # Short pause to let DOM settle
+                self.driver.implicitly_wait(0.5)
+        return False
 
     def get_title_error(self):
         return self.get_text(self.TITLE_ERROR)
@@ -99,18 +112,25 @@ class NotesPage(BasePage):
         self.wait.until_not(EC.presence_of_element_located(self.MODAL))
 
     def get_note_checkbox(self, title):
-        """
-        Return the checkbox element of the note with the given title.
-        The checkbox is inside the same card as the title.
-        """
+        # Use a relative XPath inside a fresh card find (already fine because it finds elements each time)
         card_xpath = f"//div[@data-testid='note-card' and contains(., '{title}')]"
         card = self.driver.find_element(By.XPATH, card_xpath)
         return card.find_element(By.CSS_SELECTOR, "[data-testid='toggle-note-switch']")
+        # This is generally safe because it re‑locates each call, but if card goes stale while finding the checkbox, add a retry similarly.
 
-    def is_note_completed(self, title):
-        """Return True if the note's checkbox is checked."""
-        checkbox = self.get_note_checkbox(title)
-        return checkbox.is_selected()   # 'checked' attribute present
+    def is_note_completed(self, title, timeout=10):
+        """Wait until the note's checkbox is checked (completed), or return False after timeout."""
+        card_xpath = f"//div[@data-testid='note-card' and contains(., '{title}')]//input[@data-testid='toggle-note-switch']"
+        try:
+            # Wait for the checkbox inside that card to be checked
+            WebDriverWait(self.driver, timeout).until(
+                EC.element_selection_state_to_be(
+                    (By.XPATH, card_xpath), True
+                )
+            )
+            return True
+        except:
+            return False
     
     MODAL_CANCEL_BTN = (By.CSS_SELECTOR, "[data-testid='note-delete-cancel-2']")
 

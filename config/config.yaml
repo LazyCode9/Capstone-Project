@@ -1,9 +1,22 @@
 base_url: "https://practice.expandtesting.com/notes/app"
-"api_base_url": "https://practice.expandtesting.com/notes/api"
+api_base_url: "https://practice.expandtesting.com/notes/api"
+
 browser: "chrome"
 
+# Execution Mode
+#execution: "remote"
+execution: "local"
+
+# Selenium Grid URL
+grid_url: "http://localhost:4444/wd/hub"
+
+# Browser Settings
+headless: false
+
+# Waits
 implicit_wait: 5
 explicit_wait: 15
 
+# Test Credentials
 email: "22h51a6725@gmail.com"
 password: "Tyson123"

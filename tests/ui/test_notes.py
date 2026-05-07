@@ -3,7 +3,7 @@ import pytest
 from pages.login_page import LoginPage
 from pages.notes_page import NotesPage
 from config.environment import config
-
+import time
 
 @pytest.mark.ui
 @pytest.mark.smoke
@@ -60,47 +60,35 @@ def test_create_note_empty_fields(driver):
     assert "required" in title_error.lower(), "Title validation missing"
     assert "required" in desc_error.lower(), "Description validation missing"
 
+
+import time
+import pytest
+from pages.login_page import LoginPage
+from pages.notes_page import NotesPage
+from config.environment import config
+
 @pytest.mark.ui
-@pytest.mark.regression
 def test_delete_note_with_confirmation(driver):
-    """
-    TC-013: Delete (Complete) a note using the confirmation popup.
-    - Click Delete on an active note
-    - Confirm in the modal
-    - Verify the note is marked as completed (checkbox checked, note still visible)
-    """
     login_page = LoginPage(driver)
     notes_page = NotesPage(driver)
 
-    # 1. Login (same as your other tests)
     login_page.load()
     login_page.navigate_to_login()
-    login_page.login(
-        config.get("email"),
-        config.get("password")
-    )
+    login_page.login(config.get("email"), config.get("password"))
 
-    # Use an existing **uncompleted** note – choose one you know is active
-    note_title = "Capstone"   # Adjust if needed
+    title = f"DelTest_{int(time.time())}"
+    description = "To be deleted"
+    notes_page.click_add_note()
+    notes_page.create_note(title, description)
+    assert notes_page.is_note_created(title), "Note creation failed"
 
-    # Make sure the note exists and is in a completable (unchecked) state
-    # If the note is already completed, this assertion will guide you
-    assert not notes_page.is_note_completed(note_title), \
-        f"Note '{note_title}' is already completed – please use an active note for the delete test"
-
-    # 2. Click Delete on that note
-    notes_page.delete_note_by_title(note_title)
-
-    # 3. Verify the confirmation popup appeared
-    assert notes_page.is_modal_displayed(), "Delete/Complete confirmation modal did not appear"
-
-    # 4. Confirm the action
+    notes_page.delete_note_by_title(title)
+    assert notes_page.is_modal_displayed(), "Modal missing"
     notes_page.confirm_delete()
     notes_page.wait_modal_closed()
 
-    # 5. Assert the note is now marked as completed (checkbox checked)
-    assert notes_page.is_note_completed(note_title), \
-        f"Note '{note_title}' was not marked as completed after delete confirmation"
+    assert not notes_page.is_note_present(title), \
+        f"Note '{title}' still present after deletion"
     
 @pytest.mark.ui
 @pytest.mark.regression
@@ -124,7 +112,7 @@ def test_cancel_note_deletion(driver):
     )
 
     # 2. Create a new note (unique)
-    title = f"CancelTest_{int(time())}"
+    title = f"CancelTest_{int(time.time())}"
     description = "Note for cancel delete test"
 
     notes_page.click_add_note()
