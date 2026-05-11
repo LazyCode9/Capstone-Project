@@ -16,9 +16,7 @@ def test_validate_ui_to_api_note_consistency(driver):
     login_page = LoginPage(driver)
     notes_page = NotesPage(driver)
 
-    # -----------------------------
-    # UI FLOW
-    # -----------------------------
+    
 
     login_page.load()
 
@@ -44,9 +42,7 @@ def test_validate_ui_to_api_note_consistency(driver):
     assert notes_page.is_note_created(title), \
         "Note creation failed in UI"
 
-    # -----------------------------
-    # API FLOW
-    # -----------------------------
+ 
 
     notes_api = NotesAPI()
 

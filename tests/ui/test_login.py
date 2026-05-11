@@ -9,7 +9,7 @@ from config.environment import config
 def test_valid_login(driver):
 
     login_page = LoginPage(driver)
-
+    
     login_page.load()
 
     login_page.navigate_to_login()

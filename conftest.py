@@ -16,9 +16,9 @@ def driver():
 
     options = Options()
 
-    # -----------------------------
+    
     # Chrome Preferences
-    # -----------------------------
+    
     prefs = {
         "profile.default_content_setting_values.notifications": 2,
         "profile.default_content_setting_values.popups": 0,
@@ -26,14 +26,14 @@ def driver():
 
     options.add_experimental_option("prefs", prefs)
 
-    # -----------------------------
+    
     # Chrome Arguments
-    # -----------------------------
+    
     options.add_argument("--disable-popup-blocking")
     options.add_argument("--disable-notifications")
     options.add_argument("--start-maximized")
 
-    # Recommended for Docker/Grid
+    # Docker/Grid
     options.add_argument("--no-sandbox")
     options.add_argument("--disable-dev-shm-usage")
     options.add_argument("--window-size=1920,1080")
@@ -43,15 +43,15 @@ def driver():
     options.add_argument("--window-size=1920,1080")
     options.add_argument("--disable-gpu")
 
-    # # Optional Headless Mode
+    # Optional Headless Mode
     if config.get("headless"):
         options.add_argument("--headless=new")
 
     execution = config.get("execution")
 
-    # -----------------------------
+    
     # Local Execution
-    # -----------------------------
+    
     if execution == "local":
 
         driver = webdriver.Chrome(
@@ -59,9 +59,9 @@ def driver():
             options=options
         )
 
-    # -----------------------------
+   
     # Selenium Grid Execution
-    # -----------------------------
+   
     elif execution == "remote":
 
         driver = webdriver.Remote(
@@ -81,9 +81,9 @@ def driver():
     driver.quit()
 
 
-# =========================================
+
 # Capture Screenshot on Failure
-# =========================================
+
 @pytest.hookimpl(tryfirst=True, hookwrapper=True)
 def pytest_runtest_makereport(item, call):
 

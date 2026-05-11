@@ -4,15 +4,15 @@ api_base_url: "https://practice.expandtesting.com/notes/api"
 browser: "chrome"
 
 # Execution Mode
-execution: "remote"
-#execution: "local"
+execution: "local"
 
 # Selenium Grid URL
-execution: "remote"
+#execution: "remote"
 grid_url: "http://selenium-hub:4444/wd/hub"
 
 # Browser Settings
-headless: true
+headless: false
+
 
 # Waits
 implicit_wait: 5

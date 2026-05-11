@@ -30,7 +30,7 @@ class BasePage:
         element = self.wait.until(
             EC.visibility_of_element_located(locator)
         )
-        # Scroll to element
+        # Scroll to the element
         self.driver.execute_script("arguments[0].scrollIntoView(true);", element)
         time.sleep(0.2)
         element.clear()
@@ -40,7 +40,7 @@ class BasePage:
         element = self.wait.until(
             EC.visibility_of_element_located(locator)
         )
-        # Scroll to element
+        # Scroll to the element
         self.driver.execute_script("arguments[0].scrollIntoView(true);", element)
         return element.text
 

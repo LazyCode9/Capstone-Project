@@ -16,9 +16,7 @@ def test_validate_api_deletion_reflected_in_ui(driver):
     login_page = LoginPage(driver)
     notes_page = NotesPage(driver)
 
-    # ---------------------------------
-    # UI FLOW
-    # ---------------------------------
+
 
     login_page.load()
 
@@ -44,9 +42,7 @@ def test_validate_api_deletion_reflected_in_ui(driver):
     assert notes_page.is_note_created(title), \
         "Note creation failed in UI"
 
-    # ---------------------------------
-    # API FLOW
-    # ---------------------------------
+
 
     notes_api = NotesAPI()
 
@@ -80,10 +76,7 @@ def test_validate_api_deletion_reflected_in_ui(driver):
 
     assert delete_response.status_code == 200
 
-    # ---------------------------------
-    # REFRESH UI
-    # ---------------------------------
-
+    
     driver.refresh()
 
     assert notes_page.is_note_deleted(title), \

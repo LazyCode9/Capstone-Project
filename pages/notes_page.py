@@ -6,7 +6,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 
 class NotesPage(BasePage):
 
-    # ---------- Locators ----------
+
 
     # Add Note Button
     ADD_NOTE_BUTTON = (By.XPATH, "//button[@data-testid='add-new-note']")
@@ -34,7 +34,7 @@ class NotesPage(BasePage):
             f"//div[@data-testid='note-card-title'][text()='{title}']"
         )
 
-    # ---------- Actions ----------
+    
 
     def click_add_note(self):
         self.click(self.ADD_NOTE_BUTTON)
@@ -53,7 +53,7 @@ class NotesPage(BasePage):
         self.enter_description(description)
         self.click_create()
 
-    # ---------- Validations ----------
+    
 
     def is_note_created(self, title):
         """Return True if a note with the given title is visible, handling DOM refreshes."""
@@ -82,7 +82,7 @@ class NotesPage(BasePage):
     MODAL_CONFIRM_BTN = (By.CSS_SELECTOR, "[data-testid='note-delete-confirm']")
     MODAL_BODY = (By.CSS_SELECTOR, ".modal-content .modal-body")
 
-    # --- Note card elements ---
+    # Note card elements
     NOTE_CARD = (By.CSS_SELECTOR, "[data-testid='note-card']")
     NOTE_TITLE = (By.CSS_SELECTOR, "[data-testid='note-card-title']")
     NOTE_DELETE_BTN = (By.CSS_SELECTOR, "[data-testid='note-delete']")
@@ -124,17 +124,16 @@ class NotesPage(BasePage):
         )
 
     def get_note_checkbox(self, title):
-        # Use a relative XPath inside a fresh card find (already fine because it finds elements each time)
+        
         card_xpath = f"//div[@data-testid='note-card' and contains(., '{title}')]"
         card = self.driver.find_element(By.XPATH, card_xpath)
         return card.find_element(By.CSS_SELECTOR, "[data-testid='toggle-note-switch']")
-        # This is generally safe because it re‑locates each call, but if card goes stale while finding the checkbox, add a retry similarly.
-
+        
     def is_note_completed(self, title, timeout=10):
         """Wait until the note's checkbox is checked (completed), or return False after timeout."""
         card_xpath = f"//div[@data-testid='note-card' and contains(., '{title}')]//input[@data-testid='toggle-note-switch']"
         try:
-            # Wait for the checkbox inside that card to be checked
+            # Wait for the checkbox to be checked
             WebDriverWait(self.driver, timeout).until(
                 EC.element_selection_state_to_be(
                     (By.XPATH, card_xpath), True
@@ -174,9 +173,7 @@ class NotesPage(BasePage):
             return True
 
         except:
-            return False
-        
-    # Inside class NotesPage(BasePage):
+            return False        
 
     LOGOUT_BUTTON = (By.CSS_SELECTOR, "[data-testid='logout']")
 

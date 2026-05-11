@@ -142,14 +142,7 @@ def test_cancel_note_deletion(driver):
 @pytest.mark.ui
 @pytest.mark.regression
 def test_logout(driver):
-    """
-    TC-015: Logout from application.
-    1. Login
-    2. Click Logout button
-    3. Assert the Login navigation button is visible (logged‑out state)
-    4. Click it to reach the login form
-    5. Assert the login form (email input) is displayed
-    """
+   
     login_page = LoginPage(driver)
     notes_page = NotesPage(driver)
 
@@ -161,16 +154,16 @@ def test_logout(driver):
         config.get("password")
     )
 
-    # 2. Click Logout
+    # Click Logout
     notes_page.click_logout()
 
-    # 3. Verify the Login navigation button is visible (wait a moment)
+    # Verify the Login navigation button is visible
     assert login_page.is_visible(LoginPage.LOGIN_NAV_BUTTON), \
         "Logout failed – Login navigation button not visible"
 
-    # 4. Navigate to the actual login page (click the button)
+    # Navigate to the actual login page
     login_page.navigate_to_login()
 
-    # 5. Ensure the email input field is now visible
+    # Ensure the email input field is now visible
     assert login_page.is_visible(LoginPage.EMAIL_INPUT), \
         "Login page email input not displayed after clicking Login button"
